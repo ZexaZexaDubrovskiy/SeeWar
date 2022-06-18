@@ -1,0 +1,6 @@
+C:\Users\ZexaZ\OneDrive\Рабочий стол\Морской бой\SeeWar\SeeWar\bin\Debug\SeeWar.dll
+C:\Users\ZexaZ\OneDrive\Рабочий стол\Морской бой\SeeWar\SeeWar\bin\Debug\SeeWar.pdb
+C:\Users\ZexaZ\OneDrive\Рабочий стол\Морской бой\SeeWar\SeeWar\obj\Debug\SeeWar.csproj.AssemblyReference.cache
+C:\Users\ZexaZ\OneDrive\Рабочий стол\Морской бой\SeeWar\SeeWar\obj\Debug\SeeWar.csproj.CoreCompileInputs.cache
+C:\Users\ZexaZ\OneDrive\Рабочий стол\Морской бой\SeeWar\SeeWar\obj\Debug\SeeWar.dll
+C:\Users\ZexaZ\OneDrive\Рабочий стол\Морской бой\SeeWar\SeeWar\obj\Debug\SeeWar.pdb

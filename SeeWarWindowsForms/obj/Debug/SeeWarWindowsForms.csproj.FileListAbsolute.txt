@@ -1,0 +1,14 @@
+C:\Users\ZexaZ\OneDrive\Рабочий стол\Морской бой\SeeWar\SeeWarWindowsForms\bin\Debug\SeeWarWindowsForms.exe.config
+C:\Users\ZexaZ\OneDrive\Рабочий стол\Морской бой\SeeWar\SeeWarWindowsForms\bin\Debug\SeeWarWindowsForms.exe
+C:\Users\ZexaZ\OneDrive\Рабочий стол\Морской бой\SeeWar\SeeWarWindowsForms\bin\Debug\SeeWarWindowsForms.pdb
+C:\Users\ZexaZ\OneDrive\Рабочий стол\Морской бой\SeeWar\SeeWarWindowsForms\obj\Debug\SeeWarWindowsForms.csproj.AssemblyReference.cache
+C:\Users\ZexaZ\OneDrive\Рабочий стол\Морской бой\SeeWar\SeeWarWindowsForms\obj\Debug\SeeWarWindowsForms.csproj.SuggestedBindingRedirects.cache
+C:\Users\ZexaZ\OneDrive\Рабочий стол\Морской бой\SeeWar\SeeWarWindowsForms\obj\Debug\SeeWarWindowsForms.Properties.Resources.resources
+C:\Users\ZexaZ\OneDrive\Рабочий стол\Морской бой\SeeWar\SeeWarWindowsForms\obj\Debug\SeeWarWindowsForms.csproj.GenerateResource.cache
+C:\Users\ZexaZ\OneDrive\Рабочий стол\Морской бой\SeeWar\SeeWarWindowsForms\obj\Debug\SeeWarWindowsForms.csproj.CoreCompileInputs.cache
+C:\Users\ZexaZ\OneDrive\Рабочий стол\Морской бой\SeeWar\SeeWarWindowsForms\obj\Debug\SeeWarWindowsForms.exe
+C:\Users\ZexaZ\OneDrive\Рабочий стол\Морской бой\SeeWar\SeeWarWindowsForms\obj\Debug\SeeWarWindowsForms.pdb
+C:\Users\ZexaZ\OneDrive\Рабочий стол\Морской бой\SeeWar\SeeWarWindowsForms\bin\Debug\SeeWar.dll
+C:\Users\ZexaZ\OneDrive\Рабочий стол\Морской бой\SeeWar\SeeWarWindowsForms\bin\Debug\SeeWar.pdb
+C:\Users\ZexaZ\OneDrive\Рабочий стол\Морской бой\SeeWar\SeeWarWindowsForms\obj\Debug\SeeWarWindowsForms.Form1.resources
+C:\Users\ZexaZ\OneDrive\Рабочий стол\Морской бой\SeeWar\SeeWarWindowsForms\obj\Debug\SeeWarWindowsForms.csproj.CopyComplete
