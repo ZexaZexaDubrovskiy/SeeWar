@@ -28,9 +28,31 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.mainWindowClass1 = new SeeWar.MainWindowClass();
             this.ShipsBotlace = new System.Windows.Forms.Button();
+            this.PlaceShipRangomHuman = new System.Windows.Forms.Button();
+            this.mainWindowClass1 = new SeeWar.MainWindowClass();
+            this.StartGame = new System.Windows.Forms.Button();
             this.SuspendLayout();
+            // 
+            // ShipsBotlace
+            // 
+            this.ShipsBotlace.Location = new System.Drawing.Point(511, 403);
+            this.ShipsBotlace.Name = "ShipsBotlace";
+            this.ShipsBotlace.Size = new System.Drawing.Size(200, 72);
+            this.ShipsBotlace.TabIndex = 1;
+            this.ShipsBotlace.Text = "Заспавнить корабли бота";
+            this.ShipsBotlace.UseVisualStyleBackColor = true;
+            this.ShipsBotlace.Click += new System.EventHandler(this.ShipsBotlace_Click);
+            // 
+            // PlaceShipRangomHuman
+            // 
+            this.PlaceShipRangomHuman.Location = new System.Drawing.Point(86, 403);
+            this.PlaceShipRangomHuman.Name = "PlaceShipRangomHuman";
+            this.PlaceShipRangomHuman.Size = new System.Drawing.Size(200, 72);
+            this.PlaceShipRangomHuman.TabIndex = 2;
+            this.PlaceShipRangomHuman.Text = "Расставить свои корабли в случайном порядке";
+            this.PlaceShipRangomHuman.UseVisualStyleBackColor = true;
+            this.PlaceShipRangomHuman.Click += new System.EventHandler(this.PlaceShipRangomHuman_Click);
             // 
             // mainWindowClass1
             // 
@@ -42,21 +64,23 @@
             this.mainWindowClass1.Text = "mainWindowClass1";
             this.mainWindowClass1.Click += new System.EventHandler(this.mainWindowClass1_Click);
             // 
-            // ShipsBotlace
+            // StartGame
             // 
-            this.ShipsBotlace.Location = new System.Drawing.Point(13, 430);
-            this.ShipsBotlace.Name = "ShipsBotlace";
-            this.ShipsBotlace.Size = new System.Drawing.Size(200, 72);
-            this.ShipsBotlace.TabIndex = 1;
-            this.ShipsBotlace.Text = "Заспавнить корабли бота";
-            this.ShipsBotlace.UseVisualStyleBackColor = true;
-            this.ShipsBotlace.Click += new System.EventHandler(this.ShipsBotlace_Click);
+            this.StartGame.Location = new System.Drawing.Point(279, 539);
+            this.StartGame.Name = "StartGame";
+            this.StartGame.Size = new System.Drawing.Size(200, 72);
+            this.StartGame.TabIndex = 3;
+            this.StartGame.Text = "Начать игру";
+            this.StartGame.UseVisualStyleBackColor = true;
+            this.StartGame.Click += new System.EventHandler(this.StartGame_Click);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(834, 827);
+            this.Controls.Add(this.StartGame);
+            this.Controls.Add(this.PlaceShipRangomHuman);
             this.Controls.Add(this.ShipsBotlace);
             this.Controls.Add(this.mainWindowClass1);
             this.MinimumSize = new System.Drawing.Size(850, 850);
@@ -70,6 +94,8 @@
 
         private SeeWar.MainWindowClass mainWindowClass1;
         private System.Windows.Forms.Button ShipsBotlace;
+        private System.Windows.Forms.Button PlaceShipRangomHuman;
+        private System.Windows.Forms.Button StartGame;
     }
 }
 

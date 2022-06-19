@@ -24,10 +24,17 @@ namespace SeeWarWindowsForms
 
         private void ShipsBotlace_Click(object sender, EventArgs e)
         {
-            mainWindowClass1.updateArray();
-            mainWindowClass1.ShipPlaceRandom();
-            //mainWindowClass1.click();
-            //mainWindowClass1.ShipPlaceRandom();
+            mainWindowClass1.ShipPlaceRandomBot();
+        }
+
+        private void PlaceShipRangomHuman_Click(object sender, EventArgs e)
+        {
+            mainWindowClass1.ShipPlaceRandomHuman();
+        }
+
+        private void StartGame_Click(object sender, EventArgs e)
+        {
+            mainWindowClass1.StartGame = true;
         }
     }
 }
