@@ -30,13 +30,14 @@
         {
             this.ShipsBotlace = new System.Windows.Forms.Button();
             this.PlaceShipRangomHuman = new System.Windows.Forms.Button();
-            this.mainWindowClass1 = new SeeWar.MainWindowClass();
             this.StartGame = new System.Windows.Forms.Button();
+            this.mainWindowClass1 = new SeeWar.MainWindowClass();
+            this.CreateShipNonRandom = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // ShipsBotlace
             // 
-            this.ShipsBotlace.Location = new System.Drawing.Point(511, 403);
+            this.ShipsBotlace.Location = new System.Drawing.Point(590, 403);
             this.ShipsBotlace.Name = "ShipsBotlace";
             this.ShipsBotlace.Size = new System.Drawing.Size(200, 72);
             this.ShipsBotlace.TabIndex = 1;
@@ -46,13 +47,23 @@
             // 
             // PlaceShipRangomHuman
             // 
-            this.PlaceShipRangomHuman.Location = new System.Drawing.Point(86, 403);
+            this.PlaceShipRangomHuman.Location = new System.Drawing.Point(384, 403);
             this.PlaceShipRangomHuman.Name = "PlaceShipRangomHuman";
             this.PlaceShipRangomHuman.Size = new System.Drawing.Size(200, 72);
             this.PlaceShipRangomHuman.TabIndex = 2;
             this.PlaceShipRangomHuman.Text = "Расставить свои корабли в случайном порядке";
             this.PlaceShipRangomHuman.UseVisualStyleBackColor = true;
             this.PlaceShipRangomHuman.Click += new System.EventHandler(this.PlaceShipRangomHuman_Click);
+            // 
+            // StartGame
+            // 
+            this.StartGame.Location = new System.Drawing.Point(590, 498);
+            this.StartGame.Name = "StartGame";
+            this.StartGame.Size = new System.Drawing.Size(200, 72);
+            this.StartGame.TabIndex = 3;
+            this.StartGame.Text = "Начать игру";
+            this.StartGame.UseVisualStyleBackColor = true;
+            this.StartGame.Click += new System.EventHandler(this.StartGame_Click);
             // 
             // mainWindowClass1
             // 
@@ -64,21 +75,22 @@
             this.mainWindowClass1.Text = "mainWindowClass1";
             this.mainWindowClass1.Click += new System.EventHandler(this.mainWindowClass1_Click);
             // 
-            // StartGame
+            // CreateShipNonRandom
             // 
-            this.StartGame.Location = new System.Drawing.Point(279, 539);
-            this.StartGame.Name = "StartGame";
-            this.StartGame.Size = new System.Drawing.Size(200, 72);
-            this.StartGame.TabIndex = 3;
-            this.StartGame.Text = "Начать игру";
-            this.StartGame.UseVisualStyleBackColor = true;
-            this.StartGame.Click += new System.EventHandler(this.StartGame_Click);
+            this.CreateShipNonRandom.Location = new System.Drawing.Point(384, 498);
+            this.CreateShipNonRandom.Name = "CreateShipNonRandom";
+            this.CreateShipNonRandom.Size = new System.Drawing.Size(200, 72);
+            this.CreateShipNonRandom.TabIndex = 4;
+            this.CreateShipNonRandom.Text = "Расставить корабли самому";
+            this.CreateShipNonRandom.UseVisualStyleBackColor = true;
+            this.CreateShipNonRandom.Click += new System.EventHandler(this.CreateShipNonRandom_Click);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(834, 827);
+            this.Controls.Add(this.CreateShipNonRandom);
             this.Controls.Add(this.StartGame);
             this.Controls.Add(this.PlaceShipRangomHuman);
             this.Controls.Add(this.ShipsBotlace);
@@ -96,6 +108,7 @@
         private System.Windows.Forms.Button ShipsBotlace;
         private System.Windows.Forms.Button PlaceShipRangomHuman;
         private System.Windows.Forms.Button StartGame;
+        private System.Windows.Forms.Button CreateShipNonRandom;
     }
 }
 

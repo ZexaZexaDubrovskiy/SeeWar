@@ -23,6 +23,7 @@ namespace SeeWar
         }
         private int[,] _playerField = new int[10, 10];
         private int[,] _botField = new int[10, 10];
+        private int[,] _ship = new int[10, 10];
         private char[] _aplhabet = new char[] { 'А', 'Б', 'В', 'Г', 'Д', 'Е', 'Ж', 'З', 'И', 'К' };
         private List<Color> _ShipColor = new List<Color>();
         private int _cellSize;
@@ -87,6 +88,7 @@ namespace SeeWar
             //отрисовка полей
             PlayerField(e);
             BotField(e);
+            OnPaintShipAndPlace(e);
         }
         //поле для игрока
         private void PlayerField(PaintEventArgs e)
@@ -145,10 +147,28 @@ namespace SeeWar
                 e.Graphics.DrawString(_aplhabet[i].ToString(), font, new SolidBrush(Color.Black), cellRectangle, sf);
             }
         }
+
+
+        private int x1, y1;
+        public bool PlaceShip = false;
         //стрельба из лука
         public void onClickListener(Point MousePos)
         {
-            if (StartGame)
+            Point MousePos1 = PointToClient(MousePos);
+            int _xCor = MousePos1.Y / (_cellSize + _cellPadding); // норм
+            int _yCor = (MousePos1.X - 430) / (_cellSize + _cellPadding); // норм
+
+            //попали на корабль
+            if (MousePos1.Y >= 390 && MousePos1.Y < 510
+                && MousePos1.X >= 33 && MousePos1.X <= 63)
+            {
+                MessageBox.Show("выберите место куда поставить", "Корабль взят");
+                PlaceShip = true;
+                Invalidate();
+            }
+
+            //стрельба
+            if (MousePos1.Y >= 400 && MousePos1.X >= 400)
             {
                 if (fistingBot.Count == 0)
                 {
@@ -156,10 +176,6 @@ namespace SeeWar
                 }
                 if (fistingBot[fistingBot.Count - 1] == 0)
                 {
-                    Point MousePos1 = PointToClient(MousePos);
-
-                    int _xCor = MousePos1.Y / (_cellSize + _cellPadding); // норм
-                    int _yCor = (MousePos1.X - 430) / (_cellSize + _cellPadding); // норм
 
                     if (_xCor >= 1) --_xCor;
                     if (_xCor >= 10) _xCor = 9;
@@ -191,7 +207,7 @@ namespace SeeWar
                     {
                         //бот хуярит
                         Random rand = new Random();
-                        int _yCor, _xCor;
+
                         do
                         {
                             _xCor = rand.Next(0, 10);
@@ -215,10 +231,108 @@ namespace SeeWar
             }
             else
             {
-                MessageBox.Show("ИГРА НЕ НАЧАТА", "ВНИМАНИЕ");
+                //MessageBox.Show("ИГРА НЕ НАЧАТА", "ВНИМАНИЕ");
             }
 
         }
+
+        public void ClickPlaceShip(Point MousePos)
+        {
+            if (PlaceShip)
+            {
+                Point MousePos1 = PointToClient(MousePos);
+                int x = MousePos1.Y / (_cellSize + _cellPadding); // норм
+                int y = (MousePos1.X) / (_cellSize + _cellPadding); // норм
+
+                if (x >= 1) --x;
+                if (x >= 10) x = 9;
+                if (x < 0) x = 0;
+
+                if (y >= 10) y = 9;
+                if (y >= 10) y = 9;
+                if (y < 0) y = 0;
+
+
+                int buffer;
+                for (int i = 0; i < _ship.GetLength(0); ++i)
+                {
+                    for (int j = 0; j < _ship.GetLength(1); ++j)
+                    {
+                        buffer = _ship[i, j];
+                        _ship[i, j] = _playerField[i, j];
+                        _playerField[i, j] = buffer;
+                    }
+                }
+            }
+        }
+
+        //создать поле с кораблями
+        public void CreateShipPlayer()
+        {
+            for (int i = 0; i < _playerField.GetLength(0); i++)
+                for (int j = 0; j < _playerField.GetLength(1); j++)
+                    _playerField[i, j] = 0;
+
+            _ship[0, 0] = 4;
+            _ship[0, 1] = 4;
+            _ship[0, 2] = 4;
+            _ship[0, 3] = 4;
+
+            _ship[0, 5] = 3;
+            _ship[0, 6] = 3;
+            _ship[0, 7] = 3;
+
+            _ship[2, 0] = 3;
+            _ship[2, 1] = 3;
+            _ship[2, 2] = 3;
+
+            _ship[2, 4] = 2;
+            _ship[2, 5] = 2;
+
+            _ship[2, 7] = 2;
+            _ship[2, 8] = 2;
+
+            _ship[4, 0] = 2;
+            _ship[4, 1] = 2;
+
+            _ship[4, 3] = 2;
+            _ship[4, 4] = 2;
+
+            _ship[4, 6] = 1;
+            _ship[4, 8] = 1;
+            _ship[6, 0] = 1;
+            _ship[6, 2] = 1;
+        }
+
+        // расставить корабли
+        public void OnPaintShipAndPlace(PaintEventArgs e)
+        {
+            int x, y;
+
+            for (int i = 0; i < _ship.GetLength(0); i++)
+                for (int j = 0; j < _ship.GetLength(1); j++)
+                    if (_ship[i, j] != 0)
+                    {
+                        x = _cellSize * (i + 1) + _cellPadding;
+                        y = _cellSize * (j + _playerField.GetLength(1) + 3) + _cellPadding;
+                        e.Graphics.FillRectangle(new SolidBrush(Color.Blue), x, y, _cellSize, _cellSize);
+                    }
+
+            Invalidate();
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
         //расставить корабли рандомно
         public void ShipPlaceRandom(bool BotOrHuman)
         {
@@ -263,7 +377,7 @@ namespace SeeWar
         private bool AddShipPlaceFieldHorizontalVertical(int i, int j, int valueShip, bool place, int[,] cell)
         {
 
-            if (RealPlaceLeftAndRight(i, j, valueShip, cell, place) && 
+            if (RealPlaceLeftAndRight(i, j, valueShip, cell, place) &&
                 RealPlaceAngle(i, j, valueShip, cell, place) &&
                 RealPlaceTopBottom(i, j, valueShip, cell, place))
             {
@@ -275,7 +389,8 @@ namespace SeeWar
                         --count;
                     }
                     return true;
-                } else
+                }
+                else
                 {
                     for (int count = valueShip; count != 0; ++i)
                     {

@@ -12,9 +12,16 @@ namespace SeeWarWindowsForms
 {
     public partial class Form1 : Form
     {
-        public Form1() => InitializeComponent();
+        public Form1()
+        {
+            InitializeComponent();
+           // mainWindowClass1.CreateShipPlayer();
+        }
         private void mainWindowClass1_Click(object sender, EventArgs e)
         {
+            mainWindowClass1.ClickPlaceShip(MousePosition);
+            
+            
             mainWindowClass1.onClickListener(MousePosition);
         }
 
@@ -27,11 +34,14 @@ namespace SeeWarWindowsForms
             mainWindowClass1.ShipPlaceRandom(true);
         }
 
-
-
         private void StartGame_Click(object sender, EventArgs e)
         {
             mainWindowClass1.StartGame = true;
+        }
+
+        private void CreateShipNonRandom_Click(object sender, EventArgs e)
+        {
+            mainWindowClass1.CreateShipPlayer();
         }
     }
 }
