@@ -28,7 +28,9 @@ namespace SeeWar
         private int _cellSize;
         private int _cellPadding;
         private bool _startGame = false;
-
+        private List<int> fistingHuman = new List<int>();
+        private List<int> fistingBot = new List<int>();
+        //Свойства
         public bool StartGame
         {
             private get { return _startGame; }
@@ -76,7 +78,6 @@ namespace SeeWar
             base.SetBoundsCore(x, y, width, height, specified);
         }
         //Основная функция отрисовки изображения
-        //СДЕЛАТЬ ЕГО ПРОТЕКТЕД
         protected override void OnPaint(PaintEventArgs e)
         {
             //отрисовка фона
@@ -86,7 +87,6 @@ namespace SeeWar
             //отрисовка полей
             PlayerField(e);
             BotField(e);
-
         }
         //поле для игрока
         private void PlayerField(PaintEventArgs e)
@@ -145,11 +145,6 @@ namespace SeeWar
                 e.Graphics.DrawString(_aplhabet[i].ToString(), font, new SolidBrush(Color.Black), cellRectangle, sf);
             }
         }
-
-        public void click()
-        {
-            Invalidate();
-        }
         //расстановка кораблей bota
         public void ShipPlaceRandomBot()
         {
@@ -185,246 +180,41 @@ namespace SeeWar
             while (countShipInField >= 0);
             Invalidate();
         }
-        //Функция добавления корабля на поле
-        private bool AddShipPlaceFieldHorizontalVertical(int i, int j, int valueShip, bool place)
+        //расстановка кораблей human
+        public void ShipPlaceRandomHuman()
         {
-            if (place)
+            for (int i = 0; i < 10; i++)
+                for (int j = 0; j < 10; j++)
+                    _playerField[i, j] = 0;
+
+            Random random = new Random();
+            int countShipInField = 9;
+            int valueShip;
+            do
             {
-                if (RealPlaceRightHorizontal(i, j, valueShip) && RealPlaceLeftHorizontal(i, j)
-                    && RealPlaceTopSecretHorizontal(i, j, valueShip) && RealPlaceBottomSecretHorizontal(i, j, valueShip)
-                    && RealPlaceTopRightAndBottomRightHorizontal(i, j, valueShip))
+                int numberRandom = random.Next(0, 9);
+                int aplhabetRandom = random.Next(0, 9);
+                bool place;
+                //расположение корабля
+                if (random.Next(10, 100) % 2 == 0) place = true;
+                else place = false;
+
+                //какой корабль ставить
+                if (countShipInField == 9) valueShip = 4;
+                else if (countShipInField >= 7 && countShipInField < 9) valueShip = 3;
+                else if (countShipInField >= 4 && countShipInField < 7) valueShip = 2;
+                else if (countShipInField >= 0 && countShipInField < 4) valueShip = 1;
+                else valueShip = 1;
+
+                if (_playerField[numberRandom, aplhabetRandom] == 0)
                 {
-                    for (int count = valueShip; count != 0; ++j)
-                    {
-                        _botField[i, j] = valueShip;
-                        --count;
-                    }
-                    return true;
+                    if (AddShipPlaceFieldHorizontalVerticalHuman(numberRandom, aplhabetRandom, valueShip, place))
+                        --countShipInField;
                 }
             }
-            else
-            {
-                if (i + valueShip <= 9 &&
-                    RealPlaceTopBottomVertical(i, j, valueShip) &&
-                    RealPlaceRightVertical(i, j, valueShip) &&
-                    RealPlaceLeftVertical(i, j, valueShip) &&
-                    RealPlaceTopRightAndBottomRightVertical(i, j, valueShip)
-                    )
-                {
-                    for (int count = valueShip; count != 0; ++i)
-                    {
-                        _botField[i, j] = valueShip;
-                        --count;
-                    }
-                    return true;
-                }
-            }
-
-
-            return false;
+            while (countShipInField >= 0);
+            Invalidate();
         }
-        // для горизонтали
-        //проверка что можно добавить справа + справа нет корабля
-        private bool RealPlaceRightHorizontal(int i, int j, int valueShip)
-        {
-            switch (valueShip)
-            {
-                case 4:
-                    {
-                        if (j <= 5 && _botField[i, j + 1] == 0 && _botField[i, j + 2] == 0
-                            && _botField[i, j + 3] == 0 && _botField[i, j + 4] == 0) return true;
-                        else if (j <= 6 && _botField[i, j + 1] == 0 && _botField[i, j + 2] == 0
-                            && _botField[i, j + 3] == 0) return true;
-                        else return false;
-                    }
-                case 3:
-                    {
-                        if (j <= 6 && _botField[i, j + 1] == 0 && _botField[i, j + 2] == 0
-                            && _botField[i, j + 3] == 0) return true;
-                        else if (j <= 7 && _botField[i, j + 1] == 0 && _botField[i, j + 2] == 0)
-                            return true;
-                        else return false;
-                    }
-                case 2:
-                    {
-                        if (j <= 7 && _botField[i, j + 1] == 0 && _botField[i, j + 2] == 0) return true;
-                        else if (j == 8 && _botField[i, j + 1] == 0) return true;
-                        else return false;
-                    }
-                case 1:
-                    {
-                        if (j <= 8 && _botField[i, j + 1] == 0) return true;
-                        else if (j == 9) return true;
-                        else return false;
-                    }
-            }
-            return false;
-        }
-        //проверка что можно добавить слева + слева нет корабля
-        private bool RealPlaceLeftHorizontal(int i, int j)
-        {
-            if (j == 0) return true;
-            else if (j >= 1 && _botField[i, j - 1] == 0) return true;
-            else return false;
-        }
-        //если сверху можно поставить
-        private bool RealPlaceTopSecretHorizontal(int i, int j, int valueShip)
-        {
-            int cnt = 0;
-            int valueShipBot = valueShip;
-            if (i != 0)
-            {
-                do
-                {
-                    if (_botField[i - 1, j] == 0)
-                        cnt++;
-                    ++j;
-                    --valueShipBot;
-                } while (valueShipBot != 0);
-            }
-            else return true;
-            if (cnt == valueShip) return true;
-            else return false;
-        }
-        //если снизу можно добавить
-        private bool RealPlaceBottomSecretHorizontal(int i, int j, int valueShip)
-        {
-            int cnt = 0;
-            int valueShipBot = valueShip;
-            if (i != 9)
-            {
-                do
-                {
-                    if (_botField[i + 1, j] == 0)
-                        cnt++;
-                    j++;
-                    --valueShipBot;
-                } while (valueShipBot != 0);
-            }
-            else return true;
-
-            if (cnt == valueShip) return true;
-            else return false;
-        }
-        //если по краям можно добавить
-        private bool RealPlaceTopRightAndBottomRightHorizontal(int i, int j, int valueShip)
-        {
-            int cnt = 0;
-            if (j + valueShip <= 9 && i != 0)
-            {
-                if (_botField[i - 1, j + valueShip] == 0) cnt++;
-            }
-            else cnt++;
-            if (j + valueShip <= 9 && i != 9)
-            {
-                if (_botField[i + 1, j + valueShip] == 0) cnt++;
-            }
-            else cnt++;
-            if (i != 0 && j != 0)
-            {
-                if (_botField[i - 1, j - 1] == 0) cnt++;
-            }
-            else cnt++;
-            if (i != 9 && j != 0)
-            {
-                if (_botField[i + 1, j - 1] == 0) cnt++;
-            }
-            else cnt++;
-            if (cnt == 4) return true;
-            else return false;
-        }
-
-        //для вертикали перепиши что сверху под низ. А то так короче
-        //если по краям можно добавить
-        private bool RealPlaceTopRightAndBottomRightVertical(int i, int j, int valueShip)
-        {
-            //lefttopAndRight
-            int cnt = 0;
-            if (i - 1 >= 0 && j - 1 >= 0)
-            {
-                if (_botField[i - 1, j - 1] == 0) cnt++;
-            }
-            else cnt++;
-            if (i - 1 >= 0 && j + 1 <= 9)
-            {
-                if (_botField[i - 1, j + 1] == 0) cnt++;
-            }
-            else cnt++;
-            //BottomLeftAndRight
-            if (i + valueShip <= 9 && j > 0)
-            {
-                if (_botField[i + valueShip, j - 1] == 0) cnt++;
-            }
-            else cnt++;
-            if (i + valueShip <= 9 && j != 9)
-            {
-                if (_botField[i + valueShip, j + 1] == 0) cnt++;
-            }
-            else cnt++;
-            if (cnt == 4) return true;
-            else return false;
-        }
-        //если справа нет корабля
-        private bool RealPlaceRightVertical(int i, int j, int valueShip)
-        {
-            int cnt = 0;
-            int valueShipBot = valueShip;
-            if (j < 9 && i + valueShip <= 9)
-            {
-                do
-                {
-                    if (_botField[i, j + 1] == 0)
-                        cnt++;
-                    ++i;
-                    --valueShipBot;
-                } while (valueShipBot != 0);
-            }
-            else return true;
-            if (cnt == valueShip) return true;
-            else return false;
-        }
-        //если слева нет корабля
-        private bool RealPlaceLeftVertical(int i, int j, int valueShip)
-        {
-            int cnt = 0;
-            int valueShipBot = valueShip;
-            if (j > 0 && i + valueShip <= 9)
-            {
-                do
-                {
-                    if (_botField[i, j - 1] == 0)
-                        cnt++;
-                    ++i;
-                    --valueShipBot;
-                } while (valueShipBot != 0);
-            }
-            else return true;
-            if (cnt == valueShip) return true;
-            else return false;
-        }
-        //сверху и снизу проверка
-        private bool RealPlaceTopBottomVertical(int i, int j, int valueShip)
-        {
-            int cnt = 0;
-            //сверху
-            if (i > 0)
-            {
-                if (_botField[i - 1, j] == 0) cnt++;
-            }
-            else cnt++;
-            //снизу
-            if (i + valueShip < 9)
-            {
-                if (_botField[i + valueShip, j] == 0) cnt++;
-            }
-            else cnt++;
-            if (cnt == 2) return true;
-            else return false;
-        }
-
-
-        private List<int> fistingHuman = new List<int>();
-        private List<int> fistingBot = new List<int>();
         //стрельба из лука
         public void onClickListener(Point MousePos)
         {
@@ -500,87 +290,45 @@ namespace SeeWar
 
         }
 
-
-
-        //расстановка кораблей human
-        public void ShipPlaceRandomHuman()
+        //для бота проверка. Можно вынести в одну
+        private bool AddShipPlaceFieldHorizontalVertical(int i, int j, int valueShip, bool place)
         {
-            for (int i = 0; i < 10; i++)
-                for (int j = 0; j < 10; j++)
-                    _playerField[i, j] = 0;
-
-            Random random = new Random();
-            int countShipInField = 9;
-            int valueShip;
-            do
+            if (place)
             {
-                int numberRandom = random.Next(0, 9);
-                int aplhabetRandom = random.Next(0, 9);
-                bool place;
-                //расположение корабля
-                if (random.Next(10, 100) % 2 == 0) place = true;
-                else place = false;
-
-                //какой корабль ставить
-                if (countShipInField == 9) valueShip = 4;
-                else if (countShipInField >= 7 && countShipInField < 9) valueShip = 3;
-                else if (countShipInField >= 4 && countShipInField < 7) valueShip = 2;
-                else if (countShipInField >= 0 && countShipInField < 4) valueShip = 1;
-                else valueShip = 1;
-
-                if (_playerField[numberRandom, aplhabetRandom] == 0)
+                if (false)
                 {
-                    if (AddShipPlaceFieldHorizontalVerticalHuman(numberRandom, aplhabetRandom, valueShip, place))
-                        --countShipInField;
+                    for (int count = valueShip; count != 0; ++j)
+                    {
+                        _botField[i, j] = valueShip;
+                        --count;
+                    }
+                    return true;
                 }
             }
-            while (countShipInField >= 0);
-            Invalidate();
+            else
+            {
+                if (true)
+                {
+                    for (int count = valueShip; count != 0; ++i)
+                    {
+                        _botField[i, j] = valueShip;
+                        --count;
+                    }
+                    return true;
+                }
+            }
+
+
+            return false;
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         //для чела проверка. Можно вынести в одну
         private bool AddShipPlaceFieldHorizontalVerticalHuman(int i, int j, int valueShip, bool place)
         {
             if (place)
             {
-                if (RealPlaceRightHorizontalHuman(i, j, valueShip) && RealPlaceLeftHorizontalHuman(i, j)
-                    && RealPlaceTopSecretHorizontalHuman(i, j, valueShip) && RealPlaceBottomSecretHorizontalHuman(i, j, valueShip)
-                    && RealPlaceTopRightAndBottomRightHorizontalHuman(i, j, valueShip))
+                if (RealPlaceLeftAndRightHorizontalHuman(i, j, valueShip) &&
+                    RealPlaceAngleHorizontalHuman(i, j, valueShip) &&
+                    RealPlaceTopBottomHorizontalHuman(i,j,valueShip))
                 {
                     for (int count = valueShip; count != 0; ++j)
                     {
@@ -593,10 +341,9 @@ namespace SeeWar
             else
             {
                 if (i + valueShip <= 9 &&
-                    RealPlaceTopBottomVerticalHuman(i, j, valueShip) &&
-                    RealPlaceRightVerticalHuman(i, j, valueShip) &&
-                    RealPlaceLeftVerticalHuman(i, j, valueShip) &&
-                    RealPlaceTopRightAndBottomRightVerticalHuman(i, j, valueShip)
+                    RealPlaceAngleVerticalHuman(i, j, valueShip) &&
+                    RealPlaceRightAndLeftVerticalHuman(i, j, valueShip) &&
+                    RealPlaceTopBottomVerticalHuman(i, j, valueShip)
                     )
                 {
                     for (int count = valueShip; count != 0; ++i)
@@ -607,61 +354,73 @@ namespace SeeWar
                     return true;
                 }
             }
-
-
             return false;
         }
+        
+
+        //сделать единную проверку для ботика и чела
+
+
         // для горизонтали
-        //проверка что можно добавить справа + справа нет корабля
-        private bool RealPlaceRightHorizontalHuman(int i, int j, int valueShip)
+        //справа и слева проверка +
+        private bool RealPlaceLeftAndRightHorizontalHuman(int i, int j, int valueShip)
         {
-            switch (valueShip)
+            int cnt = 0;
+            //сверху
+            if (j > 0)
             {
-                case 4:
-                    {
-                        if (j <= 5 && _playerField[i, j + 1] == 0 && _playerField[i, j + 2] == 0
-                            && _playerField[i, j + 3] == 0 && _playerField[i, j + 4] == 0) return true;
-                        else if (j <= 6 && _playerField[i, j + 1] == 0 && _playerField[i, j + 2] == 0
-                            && _playerField[i, j + 3] == 0) return true;
-                        else return false;
-                    }
-                case 3:
-                    {
-                        if (j <= 6 && _playerField[i, j + 1] == 0 && _playerField[i, j + 2] == 0
-                            && _playerField[i, j + 3] == 0) return true;
-                        else if (j <= 7 && _playerField[i, j + 1] == 0 && _playerField[i, j + 2] == 0)
-                            return true;
-                        else return false;
-                    }
-                case 2:
-                    {
-                        if (j <= 7 && _playerField[i, j + 1] == 0 && _playerField[i, j + 2] == 0) return true;
-                        else if (j == 8 && _playerField[i, j + 1] == 0) return true;
-                        else return false;
-                    }
-                case 1:
-                    {
-                        if (j <= 8 && _playerField[i, j + 1] == 0) return true;
-                        else if (j == 9) return true;
-                        else return false;
-                    }
+                if (_playerField[i, j - 1] == 0) cnt++;
             }
-            return false;
-        }
-        //проверка что можно добавить слева + слева нет корабля
-        private bool RealPlaceLeftHorizontalHuman(int i, int j)
-        {
-            if (j == 0) return true;
-            else if (j >= 1 && _playerField[i, j - 1] == 0) return true;
+            else cnt++;
+            //снизу
+            if (j + valueShip < 9)
+            {
+                if (_playerField[i, j + valueShip] == 0) cnt++;
+            }
+            else cnt++;
+            if (cnt == 2) return true;
             else return false;
         }
-        //если сверху можно поставить
-        private bool RealPlaceTopSecretHorizontalHuman(int i, int j, int valueShip)
+        //если по краям можно добавить +
+        private bool RealPlaceAngleHorizontalHuman(int i, int j, int valueShip)
+        {
+            int cnt = 0;
+            //сверху слева
+            if (i != 0 && j != 0)
+            {
+                if (_playerField[i - 1, j - 1] == 0) cnt++;
+            }
+            else cnt++;
+            //сверху справа
+            if (i != 0 && j + valueShip <= 9)
+            {
+                if (_playerField[i - 1, j + valueShip] == 0) cnt++;
+            }
+            else cnt++;
+            //снизу слева
+            if (i < 9 && j != 0)
+            {
+                if (_playerField[i + 1, j - 1] == 0) cnt++;
+            }
+            else cnt++;
+            //снизу справа
+            if (i != 9 && j + valueShip <= 9)
+            {
+                if (_playerField[i + 1, j + valueShip] == 0) cnt++;
+            }
+            else cnt++;
+            if (cnt == 4) return true;
+            else return false;
+        }
+        //сверху и снизу проверка +
+        private bool RealPlaceTopBottomHorizontalHuman(int i, int j, int valueShip)
         {
             int cnt = 0;
             int valueShipBot = valueShip;
-            if (i != 0)
+
+            if (j + valueShip < 9 && i > 0)
             {
+                //сверху
                 do
                 {
                     if (_playerField[i - 1, j] == 0)
@@ -670,65 +429,28 @@ namespace SeeWar
                     --valueShipBot;
                 } while (valueShipBot != 0);
             }
-            else return true;
-            if (cnt == valueShip) return true;
-            else return false;
-        }
-        //если снизу можно добавить
-        private bool RealPlaceBottomSecretHorizontalHuman(int i, int j, int valueShip)
-        {
-            int cnt = 0;
-            int valueShipBot = valueShip;
-            if (i != 9)
+            else cnt += 2;
+
+            valueShipBot = valueShip;
+            //снизу
+            if (i < 9 && j + valueShip <= 9)
             {
                 do
                 {
                     if (_playerField[i + 1, j] == 0)
                         cnt++;
-                    j++;
+                    ++j;
                     --valueShipBot;
                 } while (valueShipBot != 0);
             }
-            else return true;
+            else cnt += 2;
 
-            if (cnt == valueShip) return true;
+            if (cnt == valueShip * 2) return true;
             else return false;
         }
-        //если по краям можно добавить
-        private bool RealPlaceTopRightAndBottomRightHorizontalHuman(int i, int j, int valueShip)
-        {
-            int cnt = 0;
-            if (j + valueShip <= 9 && i != 0)
-            {
-                if (_playerField[i - 1, j + valueShip] == 0) cnt++;
-            }
-            else cnt++;
-            if (j + valueShip <= 9 && i != 9)
-            {
-                if (_playerField[i + 1, j + valueShip] == 0) cnt++;
-            }
-            else cnt++;
-            if (i != 0 && j != 0)
-            {
-                if (_playerField[i - 1, j - 1] == 0) cnt++;
-            }
-            else cnt++;
-            if (i != 9 && j != 0)
-            {
-                if (_playerField[i + 1, j - 1] == 0) cnt++;
-            }
-            else cnt++;
-            if (cnt == 4) return true;
-            else return false;
-        }
-
-
-
-
-
-        //для вертикали перепиши что сверху под низ. А то так короче
-        //если по краям можно добавить
-        private bool RealPlaceTopRightAndBottomRightVerticalHuman(int i, int j, int valueShip)
+        //для вертикали
+        //если по краям можно добавить +
+        private bool RealPlaceAngleVerticalHuman(int i, int j, int valueShip)
         {
             //lefttopAndRight
             int cnt = 0;
@@ -756,8 +478,8 @@ namespace SeeWar
             if (cnt == 4) return true;
             else return false;
         }
-        //если справа нет корабля
-        private bool RealPlaceRightVerticalHuman(int i, int j, int valueShip)
+        //справа и слева проверка +
+        private bool RealPlaceRightAndLeftVerticalHuman(int i, int j, int valueShip)
         {
             int cnt = 0;
             int valueShipBot = valueShip;
@@ -772,32 +494,22 @@ namespace SeeWar
                     --valueShipBot;
                 } while (valueShipBot != 0);
                 //слева вертикаль проверить
-
-            }
-            else return true;
-            if (cnt == valueShip) return true;
-            else return false;
-        }
-        //если слева нет корабля
-        private bool RealPlaceLeftVerticalHuman(int i, int j, int valueShip)
-        {
-            int cnt = 0;
-            int valueShipBot = valueShip;
-            if (j > 0 && i + valueShip <= 9)
-            {
-                do
+                valueShipBot = valueShip;
+                if (j > 0 && i + valueShip <= 9)
                 {
-                    if (_playerField[i, j - 1] == 0)
-                        cnt++;
-                    ++i;
-                    --valueShipBot;
-                } while (valueShipBot != 0);
+                    do
+                    {
+                        if (_playerField[i, j - 1] == 0)
+                            cnt++;
+                        ++i;
+                        --valueShipBot;
+                    } while (valueShipBot != 0);
+                }
             }
-            else return true;
-            if (cnt == valueShip) return true;
+            if (cnt == valueShip * 2) return true;
             else return false;
         }
-        //сверху и снизу проверка
+        //сверху и снизу проверка +
         private bool RealPlaceTopBottomVerticalHuman(int i, int j, int valueShip)
         {
             int cnt = 0;
@@ -816,6 +528,5 @@ namespace SeeWar
             if (cnt == 2) return true;
             else return false;
         }
-
     }
 }

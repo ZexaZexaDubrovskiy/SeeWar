@@ -12,11 +12,7 @@ namespace SeeWarWindowsForms
 {
     public partial class Form1 : Form
     {
-        public Form1()
-        {
-            InitializeComponent();
-        }
-
+        public Form1() => InitializeComponent();
         private void mainWindowClass1_Click(object sender, EventArgs e)
         {
             mainWindowClass1.onClickListener(MousePosition);
@@ -26,11 +22,12 @@ namespace SeeWarWindowsForms
         {
             mainWindowClass1.ShipPlaceRandomBot();
         }
-
         private void PlaceShipRangomHuman_Click(object sender, EventArgs e)
         {
             mainWindowClass1.ShipPlaceRandomHuman();
         }
+
+
 
         private void StartGame_Click(object sender, EventArgs e)
         {
