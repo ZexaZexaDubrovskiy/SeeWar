@@ -145,76 +145,6 @@ namespace SeeWar
                 e.Graphics.DrawString(_aplhabet[i].ToString(), font, new SolidBrush(Color.Black), cellRectangle, sf);
             }
         }
-        //расстановка кораблей bota
-        public void ShipPlaceRandomBot()
-        {
-            for (int i = 0; i < 10; i++)
-                for (int j = 0; j < 10; j++)
-                    _botField[i, j] = 0;
-
-            Random random = new Random();
-            int countShipInField = 9;
-            int valueShip;
-            do
-            {
-                int numberRandom = random.Next(0, 9);
-                int aplhabetRandom = random.Next(0, 9);
-                bool place = true;
-                //расположение корабля
-                if (random.Next(10, 100) % 2 == 0) place = true;
-                else place = false;
-
-                //какой корабль ставить
-                if (countShipInField == 9) valueShip = 4;
-                else if (countShipInField >= 7 && countShipInField < 9) valueShip = 3;
-                else if (countShipInField >= 4 && countShipInField < 7) valueShip = 2;
-                else if (countShipInField >= 0 && countShipInField < 4) valueShip = 1;
-                else valueShip = 1;
-
-                if (_botField[numberRandom, aplhabetRandom] == 0)
-                {
-                    if (AddShipPlaceFieldHorizontalVertical(numberRandom, aplhabetRandom, valueShip, place))
-                        --countShipInField;
-                }
-            }
-            while (countShipInField >= 0);
-            Invalidate();
-        }
-        //расстановка кораблей human
-        public void ShipPlaceRandomHuman()
-        {
-            for (int i = 0; i < 10; i++)
-                for (int j = 0; j < 10; j++)
-                    _playerField[i, j] = 0;
-
-            Random random = new Random();
-            int countShipInField = 9;
-            int valueShip;
-            do
-            {
-                int numberRandom = random.Next(0, 9);
-                int aplhabetRandom = random.Next(0, 9);
-                bool place;
-                //расположение корабля
-                if (random.Next(10, 100) % 2 == 0) place = true;
-                else place = false;
-
-                //какой корабль ставить
-                if (countShipInField == 9) valueShip = 4;
-                else if (countShipInField >= 7 && countShipInField < 9) valueShip = 3;
-                else if (countShipInField >= 4 && countShipInField < 7) valueShip = 2;
-                else if (countShipInField >= 0 && countShipInField < 4) valueShip = 1;
-                else valueShip = 1;
-
-                if (_playerField[numberRandom, aplhabetRandom] == 0)
-                {
-                    if (AddShipPlaceFieldHorizontalVerticalHuman(numberRandom, aplhabetRandom, valueShip, place))
-                        --countShipInField;
-                }
-            }
-            while (countShipInField >= 0);
-            Invalidate();
-        }
         //стрельба из лука
         public void onClickListener(Point MousePos)
         {
@@ -289,244 +219,245 @@ namespace SeeWar
             }
 
         }
-
-        //для бота проверка. Можно вынести в одну
-        private bool AddShipPlaceFieldHorizontalVertical(int i, int j, int valueShip, bool place)
+        //расставить корабли рандомно
+        public void ShipPlaceRandom(bool BotOrHuman)
         {
-            if (place)
+            int[,] cell;
+            if (BotOrHuman) cell = _playerField;
+            else cell = _botField;
+
+
+            for (int i = 0; i < 10; i++)
+                for (int j = 0; j < 10; j++)
+                    cell[i, j] = 0;
+
+            Random random = new Random();
+            int countShipInField = 9;
+            int valueShip;
+            do
             {
-                if (false)
+                int numberRandom = random.Next(0, 9);
+                int aplhabetRandom = random.Next(0, 9);
+                bool place;
+                //расположение корабля
+                if (random.Next(10, 100) % 2 == 0) place = true;
+                else place = false;
+
+                //какой корабль ставить
+                if (countShipInField == 9) valueShip = 4;
+                else if (countShipInField >= 7 && countShipInField < 9) valueShip = 3;
+                else if (countShipInField >= 4 && countShipInField < 7) valueShip = 2;
+                else if (countShipInField >= 0 && countShipInField < 4) valueShip = 1;
+                else valueShip = 1;
+
+                if (cell[numberRandom, aplhabetRandom] == 0)
+                {
+                    if (AddShipPlaceFieldHorizontalVertical(numberRandom, aplhabetRandom, valueShip, place, cell))
+                        --countShipInField;
+                }
+            }
+            while (countShipInField >= 0);
+            Invalidate();
+        }
+        //проверка горизон. вертик.
+        private bool AddShipPlaceFieldHorizontalVertical(int i, int j, int valueShip, bool place, int[,] cell)
+        {
+
+            if (RealPlaceLeftAndRight(i, j, valueShip, cell, place) && 
+                RealPlaceAngle(i, j, valueShip, cell, place) &&
+                RealPlaceTopBottom(i, j, valueShip, cell, place))
+            {
+                if (place)
                 {
                     for (int count = valueShip; count != 0; ++j)
                     {
-                        _botField[i, j] = valueShip;
+                        cell[i, j] = valueShip;
                         --count;
                     }
                     return true;
-                }
-            }
-            else
-            {
-                if (true)
+                } else
                 {
                     for (int count = valueShip; count != 0; ++i)
                     {
-                        _botField[i, j] = valueShip;
+                        cell[i, j] = valueShip;
                         --count;
                     }
                     return true;
                 }
             }
-
 
             return false;
         }
-        //для чела проверка. Можно вынести в одну
-        private bool AddShipPlaceFieldHorizontalVerticalHuman(int i, int j, int valueShip, bool place)
-        {
-            if (place)
-            {
-                if (RealPlaceLeftAndRightHorizontalHuman(i, j, valueShip) &&
-                    RealPlaceAngleHorizontalHuman(i, j, valueShip) &&
-                    RealPlaceTopBottomHorizontalHuman(i,j,valueShip))
-                {
-                    for (int count = valueShip; count != 0; ++j)
-                    {
-                        _playerField[i, j] = valueShip;
-                        --count;
-                    }
-                    return true;
-                }
-            }
-            else
-            {
-                if (i + valueShip <= 9 &&
-                    RealPlaceAngleVerticalHuman(i, j, valueShip) &&
-                    RealPlaceRightAndLeftVerticalHuman(i, j, valueShip) &&
-                    RealPlaceTopBottomVerticalHuman(i, j, valueShip)
-                    )
-                {
-                    for (int count = valueShip; count != 0; ++i)
-                    {
-                        _playerField[i, j] = valueShip;
-                        --count;
-                    }
-                    return true;
-                }
-            }
-            return false;
-        }
-        
-
-        //сделать единную проверку для ботика и чела
-
-
-        // для горизонтали
         //справа и слева проверка +
-        private bool RealPlaceLeftAndRightHorizontalHuman(int i, int j, int valueShip)
+        private bool RealPlaceLeftAndRight(int i, int j, int valueShip, int[,] cell, bool place)
         {
-            int cnt = 0;
-            //сверху
-            if (j > 0)
+            if (place)
             {
-                if (_playerField[i, j - 1] == 0) cnt++;
-            }
-            else cnt++;
-            //снизу
-            if (j + valueShip < 9)
-            {
-                if (_playerField[i, j + valueShip] == 0) cnt++;
-            }
-            else cnt++;
-            if (cnt == 2) return true;
-            else return false;
-        }
-        //если по краям можно добавить +
-        private bool RealPlaceAngleHorizontalHuman(int i, int j, int valueShip)
-        {
-            int cnt = 0;
-            //сверху слева
-            if (i != 0 && j != 0)
-            {
-                if (_playerField[i - 1, j - 1] == 0) cnt++;
-            }
-            else cnt++;
-            //сверху справа
-            if (i != 0 && j + valueShip <= 9)
-            {
-                if (_playerField[i - 1, j + valueShip] == 0) cnt++;
-            }
-            else cnt++;
-            //снизу слева
-            if (i < 9 && j != 0)
-            {
-                if (_playerField[i + 1, j - 1] == 0) cnt++;
-            }
-            else cnt++;
-            //снизу справа
-            if (i != 9 && j + valueShip <= 9)
-            {
-                if (_playerField[i + 1, j + valueShip] == 0) cnt++;
-            }
-            else cnt++;
-            if (cnt == 4) return true;
-            else return false;
-        }
-        //сверху и снизу проверка +
-        private bool RealPlaceTopBottomHorizontalHuman(int i, int j, int valueShip)
-        {
-            int cnt = 0;
-            int valueShipBot = valueShip;
-
-            if (j + valueShip < 9 && i > 0)
-            {
+                int cnt = 0;
                 //сверху
-                do
+                if (j > 0)
                 {
-                    if (_playerField[i - 1, j] == 0)
-                        cnt++;
-                    ++j;
-                    --valueShipBot;
-                } while (valueShipBot != 0);
-            }
-            else cnt += 2;
-
-            valueShipBot = valueShip;
-            //снизу
-            if (i < 9 && j + valueShip <= 9)
-            {
-                do
+                    if (cell[i, j - 1] == 0) cnt++;
+                }
+                else cnt++;
+                //снизу
+                if (j + valueShip < 9)
                 {
-                    if (_playerField[i + 1, j] == 0)
-                        cnt++;
-                    ++j;
-                    --valueShipBot;
-                } while (valueShipBot != 0);
+                    if (cell[i, j + valueShip] == 0) cnt++;
+                }
+                else cnt++;
+                if (cnt == 2) return true;
+                else return false;
             }
-            else cnt += 2;
-
-            if (cnt == valueShip * 2) return true;
-            else return false;
-        }
-        //для вертикали
-        //если по краям можно добавить +
-        private bool RealPlaceAngleVerticalHuman(int i, int j, int valueShip)
-        {
-            //lefttopAndRight
-            int cnt = 0;
-            if (i - 1 >= 0 && j - 1 >= 0)
+            else
             {
-                if (_playerField[i - 1, j - 1] == 0) cnt++;
-            }
-            else cnt++;
-            if (i - 1 >= 0 && j + 1 <= 9)
-            {
-                if (_playerField[i - 1, j + 1] == 0) cnt++;
-            }
-            else cnt++;
-            //BottomLeftAndRight
-            if (i + valueShip <= 9 && j > 0)
-            {
-                if (_playerField[i + valueShip, j - 1] == 0) cnt++;
-            }
-            else cnt++;
-            if (i + valueShip <= 9 && j != 9)
-            {
-                if (_playerField[i + valueShip, j + 1] == 0) cnt++;
-            }
-            else cnt++;
-            if (cnt == 4) return true;
-            else return false;
-        }
-        //справа и слева проверка +
-        private bool RealPlaceRightAndLeftVerticalHuman(int i, int j, int valueShip)
-        {
-            int cnt = 0;
-            int valueShipBot = valueShip;
-            if (j < 9 && i + valueShip <= 9)
-            {
-                //справа вертикаль проверить
-                do
+                int cnt = 0;
+                int valueShipBot = valueShip;
+                if (j < 9 && i + valueShip <= 9)
                 {
-                    if (_playerField[i, j + 1] == 0)
-                        cnt++;
-                    ++i;
-                    --valueShipBot;
-                } while (valueShipBot != 0);
-                //слева вертикаль проверить
-                valueShipBot = valueShip;
-                if (j > 0 && i + valueShip <= 9)
-                {
+                    //справа вертикаль проверить
                     do
                     {
-                        if (_playerField[i, j - 1] == 0)
+                        if (cell[i, j + 1] == 0)
                             cnt++;
                         ++i;
                         --valueShipBot;
                     } while (valueShipBot != 0);
+                    //слева вертикаль проверить
+                    valueShipBot = valueShip;
+                    if (j > 0 && i + valueShip <= 9)
+                    {
+                        do
+                        {
+                            if (cell[i, j - 1] == 0)
+                                cnt++;
+                            ++i;
+                            --valueShipBot;
+                        } while (valueShipBot != 0);
+                    }
                 }
+                if (cnt == valueShip * 2) return true;
+                else return false;
             }
-            if (cnt == valueShip * 2) return true;
-            else return false;
+        }
+        //если по краям можно добавить +
+        private bool RealPlaceAngle(int i, int j, int valueShip, int[,] cell, bool place)
+        {
+            if (place)
+            {
+                int cnt = 0;
+                //сверху слева
+                if (i != 0 && j != 0)
+                {
+                    if (cell[i - 1, j - 1] == 0) cnt++;
+                }
+                else cnt++;
+                //сверху справа
+                if (i != 0 && j + valueShip <= 9)
+                {
+                    if (cell[i - 1, j + valueShip] == 0) cnt++;
+                }
+                else cnt++;
+                //снизу слева
+                if (i < 9 && j != 0)
+                {
+                    if (cell[i + 1, j - 1] == 0) cnt++;
+                }
+                else cnt++;
+                //снизу справа
+                if (i != 9 && j + valueShip <= 9)
+                {
+                    if (cell[i + 1, j + valueShip] == 0) cnt++;
+                }
+                else cnt++;
+                if (cnt == 4) return true;
+                else return false;
+            }
+            else
+            {
+                //lefttopAndRight
+                int cnt = 0;
+                if (i - 1 >= 0 && j - 1 >= 0)
+                {
+                    if (cell[i - 1, j - 1] == 0) cnt++;
+                }
+                else cnt++;
+                if (i - 1 >= 0 && j + 1 <= 9)
+                {
+                    if (cell[i - 1, j + 1] == 0) cnt++;
+                }
+                else cnt++;
+                //BottomLeftAndRight
+                if (i + valueShip <= 9 && j > 0)
+                {
+                    if (cell[i + valueShip, j - 1] == 0) cnt++;
+                }
+                else cnt++;
+                if (i + valueShip <= 9 && j != 9)
+                {
+                    if (cell[i + valueShip, j + 1] == 0) cnt++;
+                }
+                else cnt++;
+                if (cnt == 4) return true;
+                else return false;
+            }
         }
         //сверху и снизу проверка +
-        private bool RealPlaceTopBottomVerticalHuman(int i, int j, int valueShip)
+        private bool RealPlaceTopBottom(int i, int j, int valueShip, int[,] cell, bool place)
         {
-            int cnt = 0;
-            //сверху
-            if (i > 0)
+            if (place)
             {
-                if (_playerField[i - 1, j] == 0) cnt++;
+                int cnt = 0;
+                int valueShipBot = valueShip;
+
+                if (j + valueShip < 9 && i > 0)
+                {
+                    //сверху
+                    do
+                    {
+                        if (cell[i - 1, j] == 0)
+                            cnt++;
+                        ++j;
+                        --valueShipBot;
+                    } while (valueShipBot != 0);
+                }
+                else cnt += 2;
+
+                valueShipBot = valueShip;
+                //снизу
+                if (i < 9 && j + valueShip <= 9)
+                {
+                    do
+                    {
+                        if (cell[i + 1, j] == 0)
+                            cnt++;
+                        ++j;
+                        --valueShipBot;
+                    } while (valueShipBot != 0);
+                }
+                else cnt += 2;
+
+                if (cnt == valueShip * 2) return true;
+                else return false;
             }
-            else cnt++;
-            //снизу
-            if (i + valueShip < 9)
+            else
             {
-                if (_playerField[i + valueShip, j] == 0) cnt++;
+                int cnt = 0;
+                //сверху
+                if (i > 0)
+                {
+                    if (cell[i - 1, j] == 0) cnt++;
+                }
+                else cnt++;
+                //снизу
+                if (i + valueShip < 9)
+                {
+                    if (cell[i + valueShip, j] == 0) cnt++;
+                }
+                else cnt++;
+                if (cnt == 2) return true;
+                else return false;
             }
-            else cnt++;
-            if (cnt == 2) return true;
-            else return false;
         }
     }
 }

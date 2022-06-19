@@ -20,11 +20,11 @@ namespace SeeWarWindowsForms
 
         private void ShipsBotlace_Click(object sender, EventArgs e)
         {
-            mainWindowClass1.ShipPlaceRandomBot();
+            mainWindowClass1.ShipPlaceRandom(false);
         }
         private void PlaceShipRangomHuman_Click(object sender, EventArgs e)
         {
-            mainWindowClass1.ShipPlaceRandomHuman();
+            mainWindowClass1.ShipPlaceRandom(true);
         }
 
 
