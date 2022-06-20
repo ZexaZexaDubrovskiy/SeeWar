@@ -7,6 +7,7 @@ namespace SeeWar
 {
     public class MainWindowClass : Control
     {
+        //активный конструктор
         public MainWindowClass() : base()
         {
             _cellSize = 30;
@@ -21,6 +22,11 @@ namespace SeeWar
             //если попал
             _ShipColor.Add(Color.Black);
         }
+
+
+
+
+        //переменные
         private int[,] _playerField = new int[10, 10];
         private int[,] _botField = new int[10, 10];
         private int[,] _ship = new int[10, 10];
@@ -29,9 +35,19 @@ namespace SeeWar
         private int _cellSize;
         private int _cellPadding;
         private bool _startGame = false;
+        private bool _verticalHorizontal = false;
         private List<int> fistingHuman = new List<int>();
         private List<int> fistingBot = new List<int>();
+
+
+
+
         //Свойства
+        public bool VerticalHorizontal
+        {
+            get { return _verticalHorizontal; }
+            set { _verticalHorizontal = value; }
+        }
         public bool StartGame
         {
             private get { return _startGame; }
@@ -71,6 +87,11 @@ namespace SeeWar
                 return cp;
             }
         }
+
+
+
+
+        //методы
         //функция изменения размеров окна
         protected override void SetBoundsCore(int x, int y, int width, int height, BoundsSpecified specified)
         {
@@ -149,162 +170,201 @@ namespace SeeWar
         }
 
 
-        private int x1, y1;
-        public bool PlaceShip = false;
+        private bool PlaceShip = false;
         //стрельба из лука
         public void onClickListener(Point MousePos)
         {
+
             Point MousePos1 = PointToClient(MousePos);
             int _xCor = MousePos1.Y / (_cellSize + _cellPadding); // норм
             int _yCor = (MousePos1.X - 430) / (_cellSize + _cellPadding); // норм
 
-            //попали на корабль
-            if (MousePos1.Y >= 390 && MousePos1.Y < 510
-                && MousePos1.X >= 33 && MousePos1.X <= 63)
+
+            if (PlaceShip)
             {
-                MessageBox.Show("выберите место куда поставить", "Корабль взят");
-                PlaceShip = true;
-                Invalidate();
-            }
+                //можешь ставить куда угодно
+                _xCor = MousePos1.Y / (_cellSize + _cellPadding) - 1; // норм
+                _yCor = (MousePos1.X) / (_cellSize + _cellPadding) - 1;
 
-            //стрельба
-            if (MousePos1.Y >= 400 && MousePos1.X >= 400)
-            {
-                if (fistingBot.Count == 0)
+                if (_xCor < 0) _xCor = 0;
+                if (_yCor < 0) _yCor = 0;
+                if (_xCor > 9) _xCor = 9;
+                if (_yCor > 9) _yCor = 9;
+
+                int valueShip = currentShip.typeShip;
+
+
+                //после ифа проверка на возможность поставить
+
+                //if (RealPlaceLeftAndRight(_xCor, _yCor, valueShip, _playerField, currentShip.place) &&
+                //RealPlaceAngle(_xCor, _yCor, valueShip, _playerField, currentShip.place) &&
+                //RealPlaceTopBottom(_xCor, _yCor, valueShip, _playerField, currentShip.place))
+                //{
+                currentShip.place = _verticalHorizontal;
+                if (currentShip.place)
                 {
-                    fistingBot.Add(0);
+                    ////для вертикали
+                    for (int i = _xCor; i < valueShip + _xCor; ++i)
+                        for (int j = _yCor; j < _yCor + 1; ++j)
+                            _playerField[j, i] = currentShip.typeShip;
                 }
-                if (fistingBot[fistingBot.Count - 1] == 0)
+                else
                 {
-
-                    if (_xCor >= 1) --_xCor;
-                    if (_xCor >= 10) _xCor = 9;
-                    if (_xCor < 0) _xCor = 0;
-
-                    if (_yCor >= 10) _yCor = 9;
-                    if (_yCor >= 10) _yCor = 9;
-                    if (_yCor < 0) _yCor = 0;
-
-                    //mimo
-                    if (_botField[_xCor, _yCor] == 0)
-                    {
-                        _botField[_xCor, _yCor] = 5;
-                        fistingHuman.Add(0);
-                    }
-
-                    //popal
-                    if (_botField[_xCor, _yCor] > 0 && _botField[_xCor, _yCor] < 5)
-                    {
-                        _botField[_xCor, _yCor] = 6;
-                        fistingHuman.Add(1);
-                    }
+                    //для горизонтали
+                    for (int i = _xCor; i < _yCor + 1; ++i)
+                        for (int j = _yCor; j < valueShip + _xCor; ++j)
+                            _playerField[j, i] = currentShip.typeShip;
                 }
 
 
-                if (fistingHuman[fistingHuman.Count - 1] == 0)
+                currentShip.countShips[0] -= 1;
+                if (currentShip.countShips.Count > 0 && currentShip.countShips[0] == 0)
                 {
-                    do
-                    {
-                        //бот хуярит
-                        Random rand = new Random();
-
-                        do
-                        {
-                            _xCor = rand.Next(0, 10);
-                            _yCor = rand.Next(0, 10);
-                        } while (_playerField[_xCor, _yCor] == 5 || _playerField[_xCor, _yCor] == 6);
-
-                        if (_playerField[_xCor, _yCor] == 0)
-                        {
-                            _playerField[_xCor, _yCor] = 5;
-                            fistingBot.Add(0);
-                        }
-                        if (_playerField[_xCor, _yCor] > 0 && _playerField[_xCor, _yCor] < 5)
-                        {
-                            _playerField[_xCor, _yCor] = 6;
-                            fistingBot.Add(1);
-                        }
-                    } while (fistingBot[fistingBot.Count - 1] == 1);
+                    currentShip.typeShip -= 1;
+                    currentShip.countShips.RemoveAt(0);
                 }
 
+                for (int i = 0; i < 9; i++)
+                    for (int j = 0; j < 9; j++)
+                        _ship[i, j] = 0;
+
+                for (int i = 0; i <= currentShip.x; i++)
+                    for (int j = 0; j < currentShip.typeShip; j++)
+                        _ship[i, j] = currentShip.typeShip;
+
+                PlaceShip = false;
+                //}
                 Invalidate();
             }
             else
             {
-                //MessageBox.Show("ИГРА НЕ НАЧАТА", "ВНИМАНИЕ");
-            }
-
-        }
-
-        public void ClickPlaceShip(Point MousePos)
-        {
-            if (PlaceShip)
-            {
-                Point MousePos1 = PointToClient(MousePos);
-                int x = MousePos1.Y / (_cellSize + _cellPadding); // норм
-                int y = (MousePos1.X) / (_cellSize + _cellPadding); // норм
-
-                if (x >= 1) --x;
-                if (x >= 10) x = 9;
-                if (x < 0) x = 0;
-
-                if (y >= 10) y = 9;
-                if (y >= 10) y = 9;
-                if (y < 0) y = 0;
-
-
-                int buffer;
-                for (int i = 0; i < _ship.GetLength(0); ++i)
+                //попали на корабль
+                if (MousePos1.Y >= 390 && MousePos1.Y < 510
+                    && MousePos1.X >= 33 && MousePos1.X <= 63)
                 {
-                    for (int j = 0; j < _ship.GetLength(1); ++j)
+                    MessageBox.Show("выберите место куда поставить", "Корабль взят");
+                    if (PlaceShip) PlaceShip = false;
+                    else PlaceShip = true;
+                    Invalidate();
+                }
+
+                //стрельба
+                if (MousePos1.Y >= 360 && MousePos1.X >= 400)
+                {
+                    if (fistingBot.Count == 0)
                     {
-                        buffer = _ship[i, j];
-                        _ship[i, j] = _playerField[i, j];
-                        _playerField[i, j] = buffer;
+                        fistingBot.Add(0);
                     }
+                    if (fistingBot[fistingBot.Count - 1] == 0)
+                    {
+
+                        if (_xCor >= 1) --_xCor;
+                        if (_xCor >= 10) _xCor = 9;
+                        if (_xCor < 0) _xCor = 0;
+
+                        if (_yCor >= 10) _yCor = 9;
+                        if (_yCor >= 10) _yCor = 9;
+                        if (_yCor < 0) _yCor = 0;
+
+                        //mimo
+                        if (_botField[_xCor, _yCor] == 0)
+                        {
+                            _botField[_xCor, _yCor] = 5;
+                            fistingHuman.Add(0);
+                        }
+
+                        //popal
+                        if (_botField[_xCor, _yCor] > 0 && _botField[_xCor, _yCor] < 5)
+                        {
+                            _botField[_xCor, _yCor] = 6;
+                            fistingHuman.Add(1);
+                        }
+                    }
+
+
+                    if (fistingHuman[fistingHuman.Count - 1] == 0)
+                    {
+                        do
+                        {
+                            //бот хуярит
+                            Random rand = new Random();
+
+                            do
+                            {
+                                _xCor = rand.Next(0, 10);
+                                _yCor = rand.Next(0, 10);
+                            } while (_playerField[_xCor, _yCor] == 5 || _playerField[_xCor, _yCor] == 6);
+
+                            if (_playerField[_xCor, _yCor] == 0)
+                            {
+                                _playerField[_xCor, _yCor] = 5;
+                                fistingBot.Add(0);
+                            }
+                            if (_playerField[_xCor, _yCor] > 0 && _playerField[_xCor, _yCor] < 5)
+                            {
+                                _playerField[_xCor, _yCor] = 6;
+                                fistingBot.Add(1);
+                            }
+                        } while (fistingBot[fistingBot.Count - 1] == 1);
+                    }
+                    Invalidate();
+                }
+                else
+                {
+                    //MessageBox.Show("ИГРА НЕ НАЧАТА", "ВНИМАНИЕ");
                 }
             }
         }
 
-        //создать поле с кораблями
+
+
+        public class Ship
+        {
+            public int x, y, typeShip, count;
+            public bool place;
+            public int X { get; set; }
+            public int Y { get; set; }
+            public int TypeShip { get; set; }
+            public bool Place { get; set; }
+            public int Count { get; set; }
+            public Ship(int x, int y, int typeShip, bool place)
+            {
+                this.X = x;
+                this.Y = y;
+                this.TypeShip = typeShip;
+                this.Place = place;
+            }
+            public void countShip()
+            {
+                if (typeShip == 4) count = 1;
+                countShips = new List<int>() { 1, 2, 3, 4 };
+            }
+
+            public List<int> countShips = new List<int>() { 1, 2, 3, 4 };
+        }
+        Ship currentShip = new Ship(0, 0, 4, true);
+
+
+
+        //создать корабли плеера
         public void CreateShipPlayer()
         {
+            //убрать все корабли с поля плеера
             for (int i = 0; i < _playerField.GetLength(0); i++)
                 for (int j = 0; j < _playerField.GetLength(1); j++)
                     _playerField[i, j] = 0;
 
-            _ship[0, 0] = 4;
-            _ship[0, 1] = 4;
-            _ship[0, 2] = 4;
-            _ship[0, 3] = 4;
+            currentShip.x = 0;
+            currentShip.y = 0;
+            currentShip.typeShip = 4;
+            currentShip.place = true;
+            currentShip.countShip();
 
-            _ship[0, 5] = 3;
-            _ship[0, 6] = 3;
-            _ship[0, 7] = 3;
-
-            _ship[2, 0] = 3;
-            _ship[2, 1] = 3;
-            _ship[2, 2] = 3;
-
-            _ship[2, 4] = 2;
-            _ship[2, 5] = 2;
-
-            _ship[2, 7] = 2;
-            _ship[2, 8] = 2;
-
-            _ship[4, 0] = 2;
-            _ship[4, 1] = 2;
-
-            _ship[4, 3] = 2;
-            _ship[4, 4] = 2;
-
-            _ship[4, 6] = 1;
-            _ship[4, 8] = 1;
-            _ship[6, 0] = 1;
-            _ship[6, 2] = 1;
+            CreateCurrentShipPlayer(currentShip.x, currentShip.y, currentShip.typeShip, currentShip.place);
         }
 
-        // расставить корабли
+
+        //отрисовка текущего корабля
         public void OnPaintShipAndPlace(PaintEventArgs e)
         {
             int x, y;
@@ -317,22 +377,21 @@ namespace SeeWar
                         y = _cellSize * (j + _playerField.GetLength(1) + 3) + _cellPadding;
                         e.Graphics.FillRectangle(new SolidBrush(Color.Blue), x, y, _cellSize, _cellSize);
                     }
-
+        }
+        //расставить корабли самому начало 1
+        public void CreateCurrentShipPlayer(int x, int y, int typeShip, bool place)
+        {
+            //заполнить массив с кораблями
+            for (int i = 0; i <= x; i++)
+                for (int j = 0; j < typeShip; j++)
+                    _ship[i, j] = typeShip;
             Invalidate();
         }
 
 
 
 
-
-
-
-
-
-
-
-
-
+        //расстановка кораблей
         //расставить корабли рандомно
         public void ShipPlaceRandom(bool BotOrHuman)
         {

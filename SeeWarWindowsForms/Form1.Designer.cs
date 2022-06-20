@@ -31,8 +31,9 @@
             this.ShipsBotlace = new System.Windows.Forms.Button();
             this.PlaceShipRangomHuman = new System.Windows.Forms.Button();
             this.StartGame = new System.Windows.Forms.Button();
-            this.mainWindowClass1 = new SeeWar.MainWindowClass();
             this.CreateShipNonRandom = new System.Windows.Forms.Button();
+            this.mainWindowClass1 = new SeeWar.MainWindowClass();
+            this.VertHor = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // ShipsBotlace
@@ -65,16 +66,6 @@
             this.StartGame.UseVisualStyleBackColor = true;
             this.StartGame.Click += new System.EventHandler(this.StartGame_Click);
             // 
-            // mainWindowClass1
-            // 
-            this.mainWindowClass1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.mainWindowClass1.Location = new System.Drawing.Point(0, 0);
-            this.mainWindowClass1.Name = "mainWindowClass1";
-            this.mainWindowClass1.Size = new System.Drawing.Size(827, 827);
-            this.mainWindowClass1.TabIndex = 0;
-            this.mainWindowClass1.Text = "mainWindowClass1";
-            this.mainWindowClass1.Click += new System.EventHandler(this.mainWindowClass1_Click);
-            // 
             // CreateShipNonRandom
             // 
             this.CreateShipNonRandom.Location = new System.Drawing.Point(384, 498);
@@ -85,11 +76,33 @@
             this.CreateShipNonRandom.UseVisualStyleBackColor = true;
             this.CreateShipNonRandom.Click += new System.EventHandler(this.CreateShipNonRandom_Click);
             // 
+            // mainWindowClass1
+            // 
+            this.mainWindowClass1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.mainWindowClass1.Location = new System.Drawing.Point(0, 0);
+            this.mainWindowClass1.Name = "mainWindowClass1";
+            this.mainWindowClass1.Size = new System.Drawing.Size(827, 827);
+            this.mainWindowClass1.TabIndex = 0;
+            this.mainWindowClass1.Text = "mainWindowClass1";
+            this.mainWindowClass1.Click += new System.EventHandler(this.mainWindowClass1_Click);
+            // 
+            // VertHor
+            // 
+            this.VertHor.AutoSize = true;
+            this.VertHor.Location = new System.Drawing.Point(476, 610);
+            this.VertHor.Name = "VertHor";
+            this.VertHor.Size = new System.Drawing.Size(80, 17);
+            this.VertHor.TabIndex = 5;
+            this.VertHor.Text = "checkBox1";
+            this.VertHor.UseVisualStyleBackColor = true;
+            this.VertHor.CheckedChanged += new System.EventHandler(this.VertHor_CheckedChanged);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(834, 827);
+            this.Controls.Add(this.VertHor);
             this.Controls.Add(this.CreateShipNonRandom);
             this.Controls.Add(this.StartGame);
             this.Controls.Add(this.PlaceShipRangomHuman);
@@ -99,6 +112,7 @@
             this.Name = "Form1";
             this.Text = "Form1";
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -109,6 +123,7 @@
         private System.Windows.Forms.Button PlaceShipRangomHuman;
         private System.Windows.Forms.Button StartGame;
         private System.Windows.Forms.Button CreateShipNonRandom;
+        private System.Windows.Forms.CheckBox VertHor;
     }
 }
 

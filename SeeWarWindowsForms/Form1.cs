@@ -19,9 +19,6 @@ namespace SeeWarWindowsForms
         }
         private void mainWindowClass1_Click(object sender, EventArgs e)
         {
-            mainWindowClass1.ClickPlaceShip(MousePosition);
-            
-            
             mainWindowClass1.onClickListener(MousePosition);
         }
 
@@ -33,15 +30,18 @@ namespace SeeWarWindowsForms
         {
             mainWindowClass1.ShipPlaceRandom(true);
         }
-
         private void StartGame_Click(object sender, EventArgs e)
         {
             mainWindowClass1.StartGame = true;
         }
-
         private void CreateShipNonRandom_Click(object sender, EventArgs e)
         {
             mainWindowClass1.CreateShipPlayer();
+        }
+
+        private void VertHor_CheckedChanged(object sender, EventArgs e)
+        {
+            mainWindowClass1.VerticalHorizontal = VertHor.Checked;
         }
     }
 }
