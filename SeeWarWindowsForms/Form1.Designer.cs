@@ -32,8 +32,8 @@
             this.PlaceShipRangomHuman = new System.Windows.Forms.Button();
             this.StartGame = new System.Windows.Forms.Button();
             this.CreateShipNonRandom = new System.Windows.Forms.Button();
-            this.mainWindowClass1 = new SeeWar.MainWindowClass();
             this.VertHor = new System.Windows.Forms.CheckBox();
+            this.mainWindowClass1 = new SeeWar.MainWindowClass();
             this.SuspendLayout();
             // 
             // ShipsBotlace
@@ -76,6 +76,17 @@
             this.CreateShipNonRandom.UseVisualStyleBackColor = true;
             this.CreateShipNonRandom.Click += new System.EventHandler(this.CreateShipNonRandom_Click);
             // 
+            // VertHor
+            // 
+            this.VertHor.AutoSize = true;
+            this.VertHor.Location = new System.Drawing.Point(476, 610);
+            this.VertHor.Name = "VertHor";
+            this.VertHor.Size = new System.Drawing.Size(103, 17);
+            this.VertHor.TabIndex = 5;
+            this.VertHor.Text = "Горизонтально";
+            this.VertHor.UseVisualStyleBackColor = true;
+            this.VertHor.CheckedChanged += new System.EventHandler(this.VertHor_CheckedChanged);
+            // 
             // mainWindowClass1
             // 
             this.mainWindowClass1.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -84,18 +95,8 @@
             this.mainWindowClass1.Size = new System.Drawing.Size(827, 827);
             this.mainWindowClass1.TabIndex = 0;
             this.mainWindowClass1.Text = "mainWindowClass1";
+            this.mainWindowClass1.VerticalHorizontal = false;
             this.mainWindowClass1.Click += new System.EventHandler(this.mainWindowClass1_Click);
-            // 
-            // VertHor
-            // 
-            this.VertHor.AutoSize = true;
-            this.VertHor.Location = new System.Drawing.Point(476, 610);
-            this.VertHor.Name = "VertHor";
-            this.VertHor.Size = new System.Drawing.Size(80, 17);
-            this.VertHor.TabIndex = 5;
-            this.VertHor.Text = "checkBox1";
-            this.VertHor.UseVisualStyleBackColor = true;
-            this.VertHor.CheckedChanged += new System.EventHandler(this.VertHor_CheckedChanged);
             // 
             // Form1
             // 

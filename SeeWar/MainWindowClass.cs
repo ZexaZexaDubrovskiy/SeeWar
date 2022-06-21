@@ -168,6 +168,76 @@ namespace SeeWar
                 e.Graphics.DrawString(_aplhabet[i].ToString(), font, new SolidBrush(Color.Black), cellRectangle, sf);
             }
         }
+        //война!!!!!!!
+        private void CumShot(int _xCor, int _yCor, Point MousePos1)
+        {
+            //стрельба
+            if (MousePos1.Y >= 30 && MousePos1.X >= 400)
+            {
+                if (fistingBot.Count == 0)
+                {
+                    fistingBot.Add(0);
+                }
+                if (fistingBot[fistingBot.Count - 1] == 0)
+                {
+
+                    if (_xCor >= 1) --_xCor;
+                    if (_xCor >= 10) _xCor = 9;
+                    if (_xCor < 0) _xCor = 0;
+
+                    if (_yCor >= 10) _yCor = 9;
+                    if (_yCor >= 10) _yCor = 9;
+                    if (_yCor < 0) _yCor = 0;
+
+                    //mimo
+                    if (_botField[_xCor, _yCor] == 0)
+                    {
+                        _botField[_xCor, _yCor] = 5;
+                        fistingHuman.Add(0);
+                    }
+
+                    //popal
+                    if (_botField[_xCor, _yCor] > 0 && _botField[_xCor, _yCor] < 5)
+                    {
+                        _botField[_xCor, _yCor] = 6;
+                        fistingHuman.Add(1);
+                    }
+                }
+
+                if (fistingHuman[fistingHuman.Count - 1] == 0)
+                {
+                    do
+                    {
+                        //бот хуярит
+                        Random rand = new Random();
+
+                        do
+                        {
+                            _xCor = rand.Next(0, 10);
+                            _yCor = rand.Next(0, 10);
+                        } while (_playerField[_xCor, _yCor] == 5 || _playerField[_xCor, _yCor] == 6);
+
+                        if (_playerField[_xCor, _yCor] == 0)
+                        {
+                            _playerField[_xCor, _yCor] = 5;
+                            fistingBot.Add(0);
+                        }
+                        if (_playerField[_xCor, _yCor] > 0 && _playerField[_xCor, _yCor] < 5)
+                        {
+                            _playerField[_xCor, _yCor] = 6;
+                            fistingBot.Add(1);
+                        }
+                    } while (fistingBot[fistingBot.Count - 1] == 1);
+                }
+                Invalidate();
+            }
+            else
+            {
+                //MessageBox.Show("ИГРА НЕ НАЧАТА", "ВНИМАНИЕ");
+            }
+        }
+
+
 
 
         private bool PlaceShip = false;
@@ -182,41 +252,25 @@ namespace SeeWar
 
             if (PlaceShip)
             {
-                //можешь ставить куда угодно
-                _xCor = MousePos1.Y / (_cellSize + _cellPadding) - 1; // норм
+                _xCor = MousePos1.Y / (_cellSize + _cellPadding) - 1;
                 _yCor = (MousePos1.X) / (_cellSize + _cellPadding) - 1;
-
                 if (_xCor < 0) _xCor = 0;
                 if (_yCor < 0) _yCor = 0;
                 if (_xCor > 9) _xCor = 9;
                 if (_yCor > 9) _yCor = 9;
-
-                int valueShip = currentShip.typeShip;
-
-
-                //после ифа проверка на возможность поставить
-
-                //if (RealPlaceLeftAndRight(_xCor, _yCor, valueShip, _playerField, currentShip.place) &&
-                //RealPlaceAngle(_xCor, _yCor, valueShip, _playerField, currentShip.place) &&
-                //RealPlaceTopBottom(_xCor, _yCor, valueShip, _playerField, currentShip.place))
-                //{
                 currentShip.place = _verticalHorizontal;
-                if (currentShip.place)
-                {
-                    ////для вертикали
-                    for (int i = _xCor; i < valueShip + _xCor; ++i)
-                        for (int j = _yCor; j < _yCor + 1; ++j)
-                            _playerField[j, i] = currentShip.typeShip;
-                }
-                else
-                {
-                    //для горизонтали
-                    for (int i = _xCor; i < _yCor + 1; ++i)
-                        for (int j = _yCor; j < valueShip + _xCor; ++j)
-                            _playerField[j, i] = currentShip.typeShip;
-                }
+                int valueShip = currentShip.typeShip;
+                //взять расположение
+
+                //добавить на поле
+
+                //_xCor
+                //_yCor
+
+                AddShipPlaceFieldHorizontalVertical(_yCor, _xCor, valueShip, currentShip.place, _playerField);
 
 
+                //вычесть из списка кол-во кораблей
                 currentShip.countShips[0] -= 1;
                 if (currentShip.countShips.Count > 0 && currentShip.countShips[0] == 0)
                 {
@@ -224,6 +278,7 @@ namespace SeeWar
                     currentShip.countShips.RemoveAt(0);
                 }
 
+                //автозаполнение корабля поля
                 for (int i = 0; i < 9; i++)
                     for (int j = 0; j < 9; j++)
                         _ship[i, j] = 0;
@@ -232,9 +287,11 @@ namespace SeeWar
                     for (int j = 0; j < currentShip.typeShip; j++)
                         _ship[i, j] = currentShip.typeShip;
 
-                PlaceShip = false;
-                //}
+                if (currentShip.countShips.Count == 0) PlaceShip = false;
+
+
                 Invalidate();
+
             }
             else
             {
@@ -245,108 +302,50 @@ namespace SeeWar
                     MessageBox.Show("выберите место куда поставить", "Корабль взят");
                     if (PlaceShip) PlaceShip = false;
                     else PlaceShip = true;
-                    Invalidate();
                 }
 
-                //стрельба
-                if (MousePos1.Y >= 360 && MousePos1.X >= 400)
-                {
-                    if (fistingBot.Count == 0)
-                    {
-                        fistingBot.Add(0);
-                    }
-                    if (fistingBot[fistingBot.Count - 1] == 0)
-                    {
 
-                        if (_xCor >= 1) --_xCor;
-                        if (_xCor >= 10) _xCor = 9;
-                        if (_xCor < 0) _xCor = 0;
-
-                        if (_yCor >= 10) _yCor = 9;
-                        if (_yCor >= 10) _yCor = 9;
-                        if (_yCor < 0) _yCor = 0;
-
-                        //mimo
-                        if (_botField[_xCor, _yCor] == 0)
-                        {
-                            _botField[_xCor, _yCor] = 5;
-                            fistingHuman.Add(0);
-                        }
-
-                        //popal
-                        if (_botField[_xCor, _yCor] > 0 && _botField[_xCor, _yCor] < 5)
-                        {
-                            _botField[_xCor, _yCor] = 6;
-                            fistingHuman.Add(1);
-                        }
-                    }
-
-
-                    if (fistingHuman[fistingHuman.Count - 1] == 0)
-                    {
-                        do
-                        {
-                            //бот хуярит
-                            Random rand = new Random();
-
-                            do
-                            {
-                                _xCor = rand.Next(0, 10);
-                                _yCor = rand.Next(0, 10);
-                            } while (_playerField[_xCor, _yCor] == 5 || _playerField[_xCor, _yCor] == 6);
-
-                            if (_playerField[_xCor, _yCor] == 0)
-                            {
-                                _playerField[_xCor, _yCor] = 5;
-                                fistingBot.Add(0);
-                            }
-                            if (_playerField[_xCor, _yCor] > 0 && _playerField[_xCor, _yCor] < 5)
-                            {
-                                _playerField[_xCor, _yCor] = 6;
-                                fistingBot.Add(1);
-                            }
-                        } while (fistingBot[fistingBot.Count - 1] == 1);
-                    }
-                    Invalidate();
-                }
-                else
-                {
-                    //MessageBox.Show("ИГРА НЕ НАЧАТА", "ВНИМАНИЕ");
-                }
+                //_yCor
+                //_xCor
+                CumShot(_xCor, _yCor, MousePos1);
             }
         }
 
 
 
-        public class Ship
+
+        //стрельба
+        // CumShot(_xCor, _yCor, MousePos1);
+
+
+
+
+
+
+        //расставить заспавнить снизу
+        public void CreateCurrentShipPlayer(int x, int typeShip)
         {
-            public int x, y, typeShip, count;
-            public bool place;
-            public int X { get; set; }
-            public int Y { get; set; }
-            public int TypeShip { get; set; }
-            public bool Place { get; set; }
-            public int Count { get; set; }
-            public Ship(int x, int y, int typeShip, bool place)
-            {
-                this.X = x;
-                this.Y = y;
-                this.TypeShip = typeShip;
-                this.Place = place;
-            }
-            public void countShip()
-            {
-                if (typeShip == 4) count = 1;
-                countShips = new List<int>() { 1, 2, 3, 4 };
-            }
-
-            public List<int> countShips = new List<int>() { 1, 2, 3, 4 };
+            for (int i = 0; i <= x; i++)
+                for (int j = 0; j < typeShip; j++)
+                    _ship[i, j] = typeShip;
+            Invalidate();
         }
-        Ship currentShip = new Ship(0, 0, 4, true);
 
+        //отрисовка текущего корабля
+        public void OnPaintShipAndPlace(PaintEventArgs e)
+        {
+            int x, y;
+            for (int i = 0; i < _ship.GetLength(0); i++)
+                for (int j = 0; j < _ship.GetLength(1); j++)
+                    if (_ship[i, j] != 0)
+                    {
+                        x = _cellSize * (i + 1) + _cellPadding;
+                        y = _cellSize * (j + _playerField.GetLength(1) + 3) + _cellPadding;
+                        e.Graphics.FillRectangle(new SolidBrush(Color.Blue), x, y, _cellSize, _cellSize);
+                    }
+        }
 
-
-        //создать корабли плеера
+        //обновить поле игрока и заспавнить первый корабль для расстановки
         public void CreateShipPlayer()
         {
             //убрать все корабли с поля плеера
@@ -360,33 +359,32 @@ namespace SeeWar
             currentShip.place = true;
             currentShip.countShip();
 
-            CreateCurrentShipPlayer(currentShip.x, currentShip.y, currentShip.typeShip, currentShip.place);
+            CreateCurrentShipPlayer(currentShip.x, currentShip.typeShip);
         }
-
-
-        //отрисовка текущего корабля
-        public void OnPaintShipAndPlace(PaintEventArgs e)
+        public class Ship
         {
-            int x, y;
+            public int x, y, typeShip, count;
+            public bool place;
+            public int X { get; set; }
+            public int Y { get; set; }
+            public int TypeShip { get; set; }
+            public bool Place { get; set; }
+            public Ship(int x, int y, int typeShip, bool place)
+            {
+                this.X = x;
+                this.Y = y;
+                this.TypeShip = typeShip;
+                this.Place = place;
+            }
+            public void countShip()
+            {
+                if (typeShip == 4) count = 1;
+                countShips = new List<int>() { 1, 2, 3, 4 };
+            }
+            public List<int> countShips = new List<int>() { 1, 2, 3, 4 };
+        }
+        Ship currentShip = new Ship(0, 0, 4, true);
 
-            for (int i = 0; i < _ship.GetLength(0); i++)
-                for (int j = 0; j < _ship.GetLength(1); j++)
-                    if (_ship[i, j] != 0)
-                    {
-                        x = _cellSize * (i + 1) + _cellPadding;
-                        y = _cellSize * (j + _playerField.GetLength(1) + 3) + _cellPadding;
-                        e.Graphics.FillRectangle(new SolidBrush(Color.Blue), x, y, _cellSize, _cellSize);
-                    }
-        }
-        //расставить корабли самому начало 1
-        public void CreateCurrentShipPlayer(int x, int y, int typeShip, bool place)
-        {
-            //заполнить массив с кораблями
-            for (int i = 0; i <= x; i++)
-                for (int j = 0; j < typeShip; j++)
-                    _ship[i, j] = typeShip;
-            Invalidate();
-        }
 
 
 
@@ -422,6 +420,8 @@ namespace SeeWar
                 else if (countShipInField >= 4 && countShipInField < 7) valueShip = 2;
                 else if (countShipInField >= 0 && countShipInField < 4) valueShip = 1;
                 else valueShip = 1;
+
+                //place = false;
 
                 if (cell[numberRandom, aplhabetRandom] == 0)
                 {
@@ -459,61 +459,11 @@ namespace SeeWar
                     return true;
                 }
             }
-
             return false;
         }
-        //справа и слева проверка +
-        private bool RealPlaceLeftAndRight(int i, int j, int valueShip, int[,] cell, bool place)
-        {
-            if (place)
-            {
-                int cnt = 0;
-                //сверху
-                if (j > 0)
-                {
-                    if (cell[i, j - 1] == 0) cnt++;
-                }
-                else cnt++;
-                //снизу
-                if (j + valueShip < 9)
-                {
-                    if (cell[i, j + valueShip] == 0) cnt++;
-                }
-                else cnt++;
-                if (cnt == 2) return true;
-                else return false;
-            }
-            else
-            {
-                int cnt = 0;
-                int valueShipBot = valueShip;
-                if (j < 9 && i + valueShip <= 9)
-                {
-                    //справа вертикаль проверить
-                    do
-                    {
-                        if (cell[i, j + 1] == 0)
-                            cnt++;
-                        ++i;
-                        --valueShipBot;
-                    } while (valueShipBot != 0);
-                    //слева вертикаль проверить
-                    valueShipBot = valueShip;
-                    if (j > 0 && i + valueShip <= 9)
-                    {
-                        do
-                        {
-                            if (cell[i, j - 1] == 0)
-                                cnt++;
-                            ++i;
-                            --valueShipBot;
-                        } while (valueShipBot != 0);
-                    }
-                }
-                if (cnt == valueShip * 2) return true;
-                else return false;
-            }
-        }
+
+
+
         //если по краям можно добавить +
         private bool RealPlaceAngle(int i, int j, int valueShip, int[,] cell, bool place)
         {
@@ -576,62 +526,138 @@ namespace SeeWar
                 else return false;
             }
         }
-        //сверху и снизу проверка +
-        private bool RealPlaceTopBottom(int i, int j, int valueShip, int[,] cell, bool place)
+
+        //справа и слева проверка +
+        private bool RealPlaceLeftAndRight(int i, int j, int valueShip, int[,] cell, bool place)
         {
             if (place)
             {
+                //горизонталь
                 int cnt = 0;
-                int valueShipBot = valueShip;
-
-                if (j + valueShip < 9 && i > 0)
+                //слева +
+                if (j > 0)
                 {
-                    //сверху
-                    do
-                    {
-                        if (cell[i - 1, j] == 0)
-                            cnt++;
-                        ++j;
-                        --valueShipBot;
-                    } while (valueShipBot != 0);
+                    if (cell[i, j - 1] == 0) cnt++;
                 }
-                else cnt += 2;
-
-                valueShipBot = valueShip;
-                //снизу
-                if (i < 9 && j + valueShip <= 9)
+                else cnt++;
+                //справа 
+                if (j + valueShip < 9)
                 {
-                    do
+                    if (j + valueShip == 9)
                     {
-                        if (cell[i + 1, j] == 0)
-                            cnt++;
-                        ++j;
-                        --valueShipBot;
-                    } while (valueShipBot != 0);
+                        cnt++;
+                    }
+                    else
+                    {
+                        if (cell[i, j + valueShip] == 0) cnt++;
+                    };
                 }
-                else cnt += 2;
-
-                if (cnt == valueShip * 2) return true;
-                else return false;
+                if (cnt == 2) return true;
             }
             else
             {
                 int cnt = 0;
-                //сверху
-                if (i > 0)
+                int valueShipBot = valueShip;
+                int ik = i;
+
+                if (i + valueShip <= 9)
                 {
-                    if (cell[i - 1, j] == 0) cnt++;
+                    //справа
+                    if (j == 9) cnt += valueShip;
+                    else
+                    {
+                        do
+                        {
+                            if (cell[ik, j + 1] == 0) cnt++;
+                            ++ik;
+                            --valueShipBot;
+                        } while (valueShipBot != 0);
+                    }
+
+                    valueShipBot = valueShip;
+                    ik = i;
+
+                    //слева
+                    if (j == 0) cnt += valueShip;
+                    else
+                    {
+                        do
+                        {
+                            if (cell[ik, j - 1] == 0) cnt++;
+                            ++ik;
+                            --valueShipBot;
+                        } while (valueShipBot != 0);
+                    }
+
+                    if (cnt == valueShip * 2) return true;
                 }
-                else cnt++;
-                //снизу
-                if (i + valueShip < 9)
-                {
-                    if (cell[i + valueShip, j] == 0) cnt++;
-                }
-                else cnt++;
-                if (cnt == 2) return true;
-                else return false;
             }
+            return false;
+        }
+
+
+        //сверху и снизу проверка +
+        private bool RealPlaceTopBottom(int i, int j, int valueShip, int[,] cell, bool place)
+        {
+            //горизонтал
+            if (place)
+            {
+                int cnt = 0;
+                int valueShipBot = valueShip;
+                int jk = j;
+
+                if (j + valueShip < 9)
+                {
+                    //снизу
+                    if (i == 9) cnt += valueShip;
+                    else
+                    {
+                        do
+                        {
+                            if (cell[i + 1, jk] == 0) cnt++;
+                            ++jk;
+                            --valueShipBot;
+                        } while (valueShipBot != 0);
+                    }
+                    valueShipBot = valueShip;
+                    jk = j;
+                    //сверху
+                    if (i == 0) cnt += valueShip;
+                    else
+                    {
+                        do
+                        {
+                            if (cell[i - 1, jk] == 0) cnt++;
+                            ++jk;
+                            --valueShipBot;
+                        } while (valueShipBot != 0);
+                    }
+
+                    if (cnt == valueShip * 2) return true;
+                }
+            }
+            else
+            {
+                int cnt = 0;
+                //вертикаль сверху
+                if (i == 0) cnt += valueShip;
+                else
+                {
+                    if (cell[i - 1, j] == 0) cnt += valueShip;
+                }
+                //вертикаль снизу
+                if (i + valueShip <= 9)
+                {
+                    if (cell[i + 1, j] == 0) cnt += valueShip;
+                }
+                else
+                {
+                    cnt += valueShip;
+                }
+
+                if (cnt == valueShip * 2) return true;
+            }
+            return false;
         }
     }
 }
